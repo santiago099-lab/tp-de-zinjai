@@ -286,6 +286,50 @@ public:
 			}
 		}
 	}
+	
+	void verificarColisiones() {
+		for (int i = 0; i < MAX_BALAS_JUGADOR; i++) {
+			if (!balasJugador[i].estaActivo()) continue;
+			
+			for (int j = 0; j < numEnemigos; j++){
+				if (!enemigos[j].estaActivo()) continue;
+				
+				if (balasJugador[i].getX() == enemigos[j].getX() && balasJugador[i].getY() == enemigos[j].getY()) {
+					balasJugador[i].desactivar();
+					balasJugador[i].borrar();
+					enemigos[j].recibirDanio();
+					
+					if (!enemigos[j].estaActivo()) {
+						enemigos[j].borrar();
+						jugador.sumarPuntos(enemigos[j].getPuntos());
+					}
+					break;
+				}
+			}
+		}
+		
+		for (int i = 0; i < MAX_BALAS_ENEMIGAS; i++) {
+			if (!balasEnemigas[i].getX() == jugador.getX() && balasEnemigas[i].get() == jugador.getY()) {
+				balasEnemigas[i].desactivar();
+				balasEnemigas[i].borrar();
+				jugador.recibirDanio();
+			}
+		}
+	}
+	
+	bool verificarCondicionesFinales() {
+		if (contarEnemigosActivos() == 0) {
+			clrscr();
+			textcolor(GREEN);
+			gotoxy(ANCHO_PANTALLA/2 - 10, ALTO_PANTALLA/2);
+			cprintf("victoria");
+			gotoxy(ANCHO_PANTALLA/2 - 15, ALTO_PANTALLA/2 +2);
+			cprintf("Puntos finales: %d", jugador.getPuntos());
+			return true;
+		}
+		
+		if (jugador
+	}
 };
 int main (int argc, char *argv[]) {
 	
