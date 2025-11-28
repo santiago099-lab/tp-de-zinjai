@@ -68,7 +68,50 @@ public:
 	}
 };
 
+class Enemigo: public ObjetoJuego{
+protected:
+	int vida;
+	int puntos;
+	
+public:
+	Enemigo(): ObjetoJuego(), vida(0), puntos(0){}
+	Enemigo(int px, int py, char s, int c, int v, int p):ObjetoJuego(px, py, s, c), vida(v), puntos(p){}
+	
+	void mover() override{}
+	
+	void recibirDanio(){
+		vida--;
+		if(vida <= 0){
+			activo = false;
+		};
+	}
+	
+	int getPuntos() {return puntos;}
+	int getVida() {return vida;}
+	
+	void moverPosicion(int nx, int ny){
+		borrar();
+		x = nx;
+		y = ny;
+		dibujar();
+	}
+};
 
+class EnemigoDebil: public Enemigo{
+public:
+	EnemigoDebil(): Enemigo(){}
+	EnemigoDebil(int px, int py):Enemigo(px, py, 'M', GREEN, 1, 10){}
+};
+class EnemigoMedio : public Enemigo{
+public:
+	EnemigoMedio(): Enemigo(){}
+	EnemigoMedio(int px, int py): Enemigo(px, py, 'W', YELLOW, 2, 20){}
+};
+class EnemigoFuerte: public Enemigo{
+public:
+	EnemigoFuerte(): Enemigo(){}
+	EnemigoFuerte(int px, int py): Enemigo(px, py, 'H', RED, 3, 30){}
+};
 int main (int argc, char *argv[]) {
 	
 	
