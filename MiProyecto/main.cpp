@@ -112,6 +112,45 @@ public:
 	EnemigoFuerte(): Enemigo(){}
 	EnemigoFuerte(int px, int py): Enemigo(px, py, 'H', RED, 3, 30){}
 };
+
+class Jugador: public ObjetoJuego{
+private:
+	int vidas;
+	int puntos;
+	
+public:
+	Jugador(): ObjetoJuego(ANCHO_PANTALLA/2, ALTO_PANTALLA - 3, 'A', LIGHTBLUE), vidas(3), puntos(0){}
+	
+	void mover() override{
+		if (kbhit()){
+			int tecla = getch();
+			borrar();
+			
+			if(tecla == 75 && x > 2){
+				x--;
+			}
+			else if(tecla == 77 && x < ANCHO_PANTALLA - 2){
+				x++;
+			}
+			dibujar();
+		}
+	}
+	
+	void recibirDanio(){
+		vidas--;
+		for(int i = 0; i < 3; i++){
+			borrar();
+			Sleep(100);
+			dibujar();
+			Sleep(100);
+		}
+	}
+	void sumarPuntos(int p) {puntos += p;}
+	int getVidas(){return vidas;}
+	int getPuntos(){return puntos;}
+};
+
+
 int main (int argc, char *argv[]) {
 	
 	
