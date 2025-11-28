@@ -150,7 +150,143 @@ public:
 	int getPuntos(){return puntos;}
 };
 
-
+class Juego{
+private:
+	Jugador jugador;
+	Enemigo enemigos[MAX_ENEMIGOS];
+	Bala balasJugador[MAX_BALAS_JUGADOR];
+	Bala balasEnemigas[MAX_BALAS_ENEMIGAS];
+	int numEnemigos;
+	int direccionEnemigos;
+	int contadorMovimiento;
+	bool juegoActivo;
+	
+public:
+	Juego() {
+		srand(time(NULL));
+		direccionEnemigos = 1;
+		contadorMovimiento = 0;
+		juegoActivo = true;
+		numEnemigos = 0;
+		inicializarEnemigos();
+	}
+	
+	void inicializarEnemigos() {
+		int filas = 4;
+		int columnas = 10;
+		int espacioX = 6;
+		int espacioY = 2;
+		int inicioX = 10;
+		int inicioY = 4;
+		numEnemigos = 0;
+		
+		for(int f = 0;f < filas; f++){
+			for(int c = 0; c < columnas; c++){
+				int px = inicioX + c * espacioX;
+				int py = inicioY + f * espacioY;
+				if (f == 0){
+					enemigos[numEnemigos] = EnemigoFuerte(px, py);
+				} else if (f <= 2){
+					enemigos[numEnemigos] = EnemigoMedio(px, py);
+				} else {
+					enemigos[numEnemigos] = EnemigoDebil(px, py);
+				}
+				numEnemigos++;
+			}
+		}
+	}
+	
+	void dibujarMarco(){
+		textcolor(LIGHTGRAY);
+		for (int i = 1; i <= ANCHO_PANTALLA; i++){
+			gotoxy(i, 1); cprintf("-");
+			gotoxy(i, ALTO_PANTALLA - 1);
+			cprintf("-");
+		}
+		for(int i = 1;i <= ALTO_PANTALLA; i++){
+			gotoxy(1, i); cprintf("|");
+			gotoxy(ANCHO_PANTALLA, i);
+			cprintf("|");
+		}
+	}
+	
+	void dibujarHUD() {
+		textcolor(WHITE);
+		gotoxy(3, ALTO_PANTALLA);
+		cprintf("Vidas: %d  Puntos: %d Enemigos: %d", jugador.getVidas(), jugador.getPuntos(), contarEnemigosActivos());
+	}
+	
+	int contarEnemigosActivos(){
+		int contador = 0;
+		for (int i = 0; i < numEnemigos; i++) {
+			if (enemigos[i].estaActivo()) contador++;
+		}
+		return contador;
+	}
+	
+	void moverEnemigos() {
+		contadorMovimiento++;
+		if (contadorMovimiento < 15) return;
+		contadorMovimiento = 0;
+		
+		bool cambiarDireccion = false;
+		
+		for (int i = 0; i < numEnemigos; i++) {
+			if (!enemigos[i]. estaActivo()) continue;
+			
+			if ((direccionEnemigos == 1 && enemigos[i].getX() >= ANCHO_PANTALLA - 3) || (direccionEnemigos == -1 && enemigos[i].getX() <= 3)) {
+				cambiarDireccion = true;
+				break;
+			}
+		}
+		
+		if (cambiarDireccion) {
+			direccionEnemigos *= -1;
+		}
+		
+		for (int i = 0; i < numEnemigos; i++) {
+			if (!enemigos[i].estaActivo()) continue;
+			
+			int nuevaX = enemigos[i].getX() + direccionEnemigos;
+			int nuevaY = enemigos[i].getY();
+			
+			if (cambiarDireccion) {
+				nuevaY++;
+			}
+			
+			enemigos[i].moverPosicion(nuevaX, nuevaY);
+		}
+	}
+	
+	void procesarDisparo() {
+		if (kbhit()){
+			int tecla = getch();
+			if (tecla == ' ') {
+				for (int i = 0; i < MAX_BALAS_JUGADOR; i++) {
+					if (!balasJugador[i].estaActivo()) {
+						balasJugador[i] = Bala(jugador.getX(), jugador.getY() -1, -1);
+						break;
+					}
+				}
+			}
+		}
+		
+	}
+	
+	void enemigosDisparan() {
+		if (rand() % 50 == 0) {
+			for (int i = 0; i < MAX_BALAS_ENEMIGAS; i++) {
+				if (!balasEnemigas[i].estaActivo()) {
+					int indiceAleatorio = rand() % numEnemigos;
+					if (enemigos[indiceAleatorio].estaActivo()) {
+						balasEnemigas[i] = Bala(enemigos[indiceAleatorio].getX(), enemigos[indiceAleatorio].getY() + 1, 1);
+					}
+					break;
+				}
+			}
+		}
+	}
+};
 int main (int argc, char *argv[]) {
 	
 	
