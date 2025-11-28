@@ -1,6 +1,6 @@
 #include<iostream>
 #include<windows.h>
-#include<conio.h>
+#include<conio2.h>
 #include<cstdlib>
 #include<ctime>
 using namespace std;
@@ -45,6 +45,30 @@ public:
 	
 	virtual void mover() = 0;
 };
+
+class Bala: public ObjetoJuego{
+private:
+	int velocidad;
+	
+public:
+	Bala():ObjetoJuego(), velocidad(0){}
+	Bala(int px, int py, int vel):
+	ObjetoJuego(px, py, '|', WHITE), velocidad(vel){}
+	
+	void mover() override{
+		if (!activo) return;
+		borrar();
+		y+= velocidad;
+		
+		if(y<2||y> ALTO_PANTALLA - 2){
+			activo = false;
+			return;
+		}
+		dibujar();
+	}
+};
+
+
 int main (int argc, char *argv[]) {
 	
 	
