@@ -18,7 +18,7 @@ current_source=main.cpp
 path_char=\
 [source]
 path=main.cpp
-cursor=387:8
+cursor=335:9
 open=true
 [config]
 name=Debug
@@ -47,7 +47,7 @@ enable_lto=0
 headers_dirs=
 linking_extra=
 libraries_dirs=
-libraries=
+libraries=conio
 libs_to_use=
 strip_executable=0
 console_program=1

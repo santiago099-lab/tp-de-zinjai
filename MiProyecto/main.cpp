@@ -309,7 +309,9 @@ public:
 		}
 		
 		for (int i = 0; i < MAX_BALAS_ENEMIGAS; i++) {
-			if (!balasEnemigas[i].getX() == jugador.getX() && balasEnemigas[i].get() == jugador.getY()) {
+			if (!balasEnemigas[i].estaActivo()) continue;
+			
+			if (!balasEnemigas[i].getX() == jugador.getX() && balasEnemigas[i].getY() == jugador.getY()) {
 				balasEnemigas[i].desactivar();
 				balasEnemigas[i].borrar();
 				jugador.recibirDanio();
@@ -344,7 +346,7 @@ public:
 				textcolor(RED);
 				gotoxy(ANCHO_PANTALLA/2 - 10, ALTO_PANTALLA/2);
 				cprintf("Invadido por alienigenas");
-				return true:
+				return true;
 			}
 		}
 		
@@ -388,16 +390,50 @@ public:
 		getch;
 	}
 };
+
+void mostrarPantallaInicio() {
+	clrscr();
+	textcolor(LIGHTCYAN);
+	gotoxy(30, 3);
+	cprintf("Space Invaders Lite");
+	
+	textcolor(WHITE);
+	gotoxy(25, 6);
+	cprintf("Instrucciones:");
+	gotoxy(20, 8);
+	cprintf("- Muevete con las flechas <- y ->");
+	gotoxy(20, 9);
+	cprintf("- Dispara con ESPACIO");
+	gotoxy(20, 10);
+	cprintf("- Elimina todos los enemigos");
+	gotoxy(20, 11);
+	cprintf("- No dejes que te invadan");
+	
+	textcolor(GREEN);
+	gotoxy(20, 13);
+	cprintf("M = Enemigo debil (1 vida, 10 pts)");
+	textcolor(YELLOW);
+	gotoxy(20, 14);
+	cprintf("W = Enemigo medio (2 vidas, 20 pts)");
+	textcolor(RED);
+	gotoxy(20, 15);
+	cprintf("H = Enemigo fuerte (3 vidas, 30 pts)");
+	
+	textcolor(LIGHTBLUE);
+	gotoxy(20, 17);
+	cprintf("A = Tu nave");
+	textcolor(WHITE);
+	gotoxy(25, 20);
+	cprintf("Presiona cualquier tecla para comenzar");
+	
+	getch();
+}
 int main (int argc, char *argv[]) {
 	
+	mostrarPantallaInicio();
 	
-	
-	
-	
-	
-	
-	
-	
+	Juego juego;
+	juego.ejecutar();
 	
 	return 0;
 }
