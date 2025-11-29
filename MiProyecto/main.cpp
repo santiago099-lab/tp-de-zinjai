@@ -328,7 +328,64 @@ public:
 			return true;
 		}
 		
-		if (jugador
+		if (jugador.getVidas() <= 0) {
+			clrscr();
+			textcolor(RED);
+			gotoxy(ANCHO_PANTALLA/2 - 10, ALTO_PANTALLA/2);
+            cprintf("Game over");
+			gotoxy(ANCHO_PANTALLA/2 - 15, ALTO_PANTALLA/2 + 2);
+			cprintf("Puntos finales: %d", jugador.getPuntos());
+			return true;
+		}
+		
+		for (int i = 0; i < numEnemigos; i++) {
+			if (enemigos[i].estaActivo() && enemigos[i].getY() >= jugador.getY() - 1) {
+				clrscr();
+				textcolor(RED);
+				gotoxy(ANCHO_PANTALLA/2 - 10, ALTO_PANTALLA/2);
+				cprintf("Invadido por alienigenas");
+				return true:
+			}
+		}
+		
+		return false;
+	}
+	
+	void ejecutar(){
+		clrscr();
+		dibujarMarco();
+		jugador.dibujar();
+		
+		for (int i = 0; i < numEnemigos; i++) {
+			enemigos[i].dibujar();
+		}
+		
+		while (juegoActivo) {
+			jugador.mover();
+			procesarDisparo();
+			moverEnemigos();
+			enemigosDisparan();
+			
+			for (int i = 0; i < MAX_BALAS_JUGADOR; i++) {
+				if (balasJugador[i].estaActivo()) balasJugador[i].mover();
+			}
+			for (int i = 0; i < MAX_BALAS_ENEMIGAS; i++) {
+				if (balasEnemigas[i].estaActivo()) balasEnemigas[i].mover();
+			}
+			
+			verificarColisiones();
+			dibujarHUD();
+			
+			if (verificarCondicionesFinales()) {
+				juegoActivo = false;
+			}
+			
+			Sleep(50);
+		}
+		
+		gotoxy(1, ALTO_PANTALLA + 2);
+		cprintf("Presiona cualquier tecla para salir...");
+		getch;
 	}
 };
 int main (int argc, char *argv[]) {
