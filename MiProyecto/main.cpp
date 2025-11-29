@@ -58,9 +58,9 @@ public:
 	void mover() override{
 		if (!activo) return;
 		borrar();
-		y+= velocidad;
+		y += velocidad;
 		
-		if(y<2||y> ALTO_PANTALLA - 2){
+		if(y < 2||y > ALTO_PANTALLA - 2){
 			activo = false;
 			return;
 		}
@@ -121,20 +121,23 @@ private:
 public:
 	Jugador(): ObjetoJuego(ANCHO_PANTALLA/2, ALTO_PANTALLA - 3, 'A', LIGHTBLUE), vidas(3), puntos(0){}
 	
-	void mover() override{
-		if (kbhit()){
-			int tecla = getch();
+	void moverIzquierda() {
+		if (x > 2) {
 			borrar();
-			
-			if(tecla == 75 && x > 2){
-				x--;
-			}
-			else if(tecla == 77 && x < ANCHO_PANTALLA - 2){
-				x++;
-			}
+			x--;
 			dibujar();
 		}
 	}
+	
+	void moverDerecha() {
+		if (x < ANCHO_PANTALLA - 2) {
+			borrar();
+			x++;
+			dibujar();
+		}
+	}
+	
+	void mover() override {}
 	
 	void recibirDanio(){
 		vidas--;
@@ -258,19 +261,28 @@ public:
 		}
 	}
 	
-	void procesarDisparo() {
-		if (kbhit()){
+	void procesarEntrada() {
+		if (kbhit()) {
 			int tecla = getch();
-			if (tecla == ' ') {
+			
+			if (tecla == 0 || tecla == 224) {
+				tecla = getch();
+				if (tecla == 75) {
+					jugador.moverIzquierda();
+				}
+				else if (tecla == 77) {
+					jugador.moverDerecha();
+				}
+			}
+			else if (tecla == ' ') {
 				for (int i = 0; i < MAX_BALAS_JUGADOR; i++) {
 					if (!balasJugador[i].estaActivo()) {
-						balasJugador[i] = Bala(jugador.getX(), jugador.getY() -1, -1);
+						balasJugador[i] = Bala(jugador.getX(), jugador.getY() - 1, -1);
 						break;
 					}
 				}
 			}
 		}
-		
 	}
 	
 	void enemigosDisparan() {
@@ -311,7 +323,7 @@ public:
 		for (int i = 0; i < MAX_BALAS_ENEMIGAS; i++) {
 			if (!balasEnemigas[i].estaActivo()) continue;
 			
-			if (!balasEnemigas[i].getX() == jugador.getX() && balasEnemigas[i].getY() == jugador.getY()) {
+			if (balasEnemigas[i].getX() == jugador.getX() && balasEnemigas[i].getY() == jugador.getY()) {
 				balasEnemigas[i].desactivar();
 				balasEnemigas[i].borrar();
 				jugador.recibirDanio();
@@ -363,8 +375,7 @@ public:
 		}
 		
 		while (juegoActivo) {
-			jugador.mover();
-			procesarDisparo();
+			procesarEntrada();
 			moverEnemigos();
 			enemigosDisparan();
 			
@@ -387,7 +398,7 @@ public:
 		
 		gotoxy(1, ALTO_PANTALLA + 2);
 		cprintf("Presiona cualquier tecla para salir...");
-		getch;
+		getch();
 	}
 };
 
